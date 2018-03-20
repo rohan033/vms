@@ -1,6 +1,9 @@
 # Django
 from django.core.exceptions import ObjectDoesNotExist
 
+#standard library
+from datetime import date
+
 # local Django
 from job.models import Job
 from shift.services import (get_shifts_with_open_slots_for_volunteer,
@@ -117,5 +120,13 @@ def remove_empty_jobs_for_volunteer(job_list, volunteer_id):
         shift_list = get_shifts_with_open_slots_for_volunteer(
             job.id, volunteer_id)
         if shift_list:
+            new_job_list.append(job)
+    return new_job_list
+
+def remove_invalid_jobs(job_list):
+    """ Removes all those jobs from a job list which are already over/ended """
+    new_job_list = []
+    for job in job_list:
+        if job.end_date >= date.today():
             new_job_list.append(job)
     return new_job_list
